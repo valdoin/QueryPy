@@ -8,9 +8,11 @@ from dotenv import load_dotenv
 # On voit si le fichier csv existe déjà
 
 csv_filename = "data.csv"
+
 if os.path.exists(csv_filename):
     df = pd.read_csv(csv_filename, sep="\t")
     print("Données chargées depuis le fichier CSV.")
+    print(df.head())
 else:
     print("Le fichier CSV n'existe pas. Interrogation des APIs...")
 
@@ -48,6 +50,21 @@ else:
         text = text.replace("\n", " ")
         docs.append(text)
         sources.append("Arxiv")
+
+    # Manipulation du corpus de documents
+    
+    print(f"Le corpus contient {len(docs)} documents.")
+
+    for i, doc in enumerate(docs):
+        words_nb = len(doc.split()) 
+        phrases_nb = len(doc.split('.'))
+        print(f"Document {i} : {words_nb} mots, {phrases_nb} phrases.")
+    
+    docs = [doc for doc in docs if len(doc) > 20] # suppression des textes de moins de 20 caractères
+    sources = [sources[i] for i in range(len(docs)) if len(docs[i]) > 20] # par conséquent suppression des sources associées
+    print(f"Après suppression des documents trop petits, le corpus contient {len(docs)} documents.")
+
+    str_corpus = " ".join(docs)
 
     # Création du DataFrame
 
