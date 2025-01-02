@@ -204,6 +204,27 @@ class Corpus(metaclass=SingletonMeta):
         else:
             print(f"Aucune occurrence trouvée pour '{keyword}'.")
 
+    def concorde(self, keyword, context_size=15):
+        concordances = []
+
+        if not self.full_text:
+            self.full_text = "\n".join(doc.text for doc in self.id2doc.values())
+
+        pattern = re.compile(rf"(.{{0,{context_size}}})({re.escape(keyword)})(.{{0,{context_size}}})")
+
+        for match in pattern.finditer(self.full_text):
+            left_context = match.group(1).strip()
+            found_keyword = match.group(2)
+            right_context = match.group(3).strip()
+
+            concordances.append({
+                "Contexte gauche": '...' + left_context,
+                "Motif trouvé": found_keyword,
+                "Contexte droit": right_context + '...'
+            })
+
+        return pd.DataFrame(concordances)
+
     def __repr__(self):
         return (
             f"Corpus '{self.name}':\n"

@@ -24,4 +24,6 @@ print(corpus)
 #     print(f"Auteur '{name}' inconnu.")
 
 query = input("Entrez un mot clé correspondant à votre recherche : ")
-corpus.search(query)
+# corpus.search(query)
+df = corpus.concorde(query,30)
+print(df)
