@@ -1,5 +1,4 @@
 class Document:
-
     def __init__(self, title="", author="", date="", url="", text=""):
         self.title = title
         self.author = author
@@ -12,10 +11,34 @@ class Document:
 
     def __str__(self):
         return f"{self.title}, par {self.author}"
+    
+
+class DocumentFactory:
+    @staticmethod
+    def create_document(doc_type, **kwargs):
+        if doc_type == "Reddit":
+            return RedditDocument(
+                title=kwargs.get("title", ""),
+                author=kwargs.get("author", ""),
+                date=kwargs.get("date", ""),
+                url=kwargs.get("url", ""),
+                text=kwargs.get("text", ""),
+                num_comments=kwargs.get("num_comments", 0),
+            )
+        elif doc_type == "Arxiv":
+            return ArxivDocument(
+                title=kwargs.get("title", ""),
+                author=kwargs.get("main_author", ""),
+                co_authors=kwargs.get("co_authors", []),
+                date=kwargs.get("date", ""),
+                url=kwargs.get("url", ""),
+                text=kwargs.get("text", ""),
+            )
+        else:
+            raise ValueError(f"Type de document inconnu : {doc_type}")
 
 
 class RedditDocument(Document):
-
     def __init__(self, title="", author="", date="", url="", text="", num_comments=0):
         super().__init__(title, author, date, url, text)
         self.num_comments = num_comments

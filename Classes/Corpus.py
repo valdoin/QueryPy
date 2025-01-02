@@ -10,13 +10,25 @@ import urllib.request
 import xmltodict
 
 
-class Corpus:
+class SingletonMeta(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            instance = super().__call__(*args, **kwargs)
+            cls._instances[cls] = instance
+        return cls._instances[cls]
+
+
+class Corpus(metaclass=SingletonMeta):
     def __init__(self, name):
-        self.name = name
-        self.authors = {}
-        self.id2doc = {}
-        self.ndoc = 0
-        self.naut = 0
+        if not hasattr(self, "initialized"):
+            self.name = name
+            self.authors = {}
+            self.id2doc = {}
+            self.ndoc = 0
+            self.naut = 0
+            self.initialized = True
 
     def add_document(self, document):
         self.id2doc[self.ndoc] = document
