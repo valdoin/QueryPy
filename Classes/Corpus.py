@@ -3,6 +3,7 @@ from Classes.Author import Author
 from datetime import datetime
 import pandas as pd
 import json
+import re
 import os
 from dotenv import load_dotenv
 import praw
@@ -28,6 +29,7 @@ class Corpus(metaclass=SingletonMeta):
             self.id2doc = {}
             self.ndoc = 0
             self.naut = 0
+            self.full_text = None
             self.initialized = True
 
     def add_document(self, document):
@@ -187,6 +189,20 @@ class Corpus(metaclass=SingletonMeta):
         sorted_docs = sorted(self.id2doc.values(), key=lambda doc: doc.title)
         for doc in sorted_docs[:n]:
             print(f"{doc.title} - {doc.date} (Auteur(s) : {doc.author})")
+
+    def search(self, keyword):
+        if not self.full_text:
+            self.full_text = "\n".join(doc.text for doc in self.id2doc.values())
+
+        pattern = rf"(.{{0,30}}{re.escape(keyword)}.{{0,30}})"
+        matches = re.findall(pattern, self.full_text, re.IGNORECASE)
+
+        if matches:
+            print(f"{len(matches)} occurence(s) trouvée(s) pour '{keyword}':\n")
+            for match in matches:
+                print(f"...{match}...")
+        else:
+            print(f"Aucune occurrence trouvée pour '{keyword}'.")
 
     def __repr__(self):
         return (

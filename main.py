@@ -17,8 +17,11 @@ else:
 print(corpus)
 
 # Affichage des statistiques d'un auteur
-name = input("Entrez le nom de l'auteur pour afficher les statistiques : ")
-if name in corpus.authors:
-    corpus.authors[name].display_stats()
-else:
-    print(f"Auteur '{name}' inconnu.")
+# name = input("Entrez le nom de l'auteur pour afficher les statistiques : ")
+# if name in corpus.authors:
+#     corpus.authors[name].display_stats()
+# else:
+#     print(f"Auteur '{name}' inconnu.")
+
+query = input("Entrez un mot clé correspondant à votre recherche : ")
+corpus.search(query)
