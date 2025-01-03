@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 import praw
 import urllib.request
 import xmltodict
+from utils import count_document_frequency, build_vocabulary,count_occurrences
 
 
 class SingletonMeta(type):
@@ -223,7 +224,36 @@ class Corpus(metaclass=SingletonMeta):
                 "Contexte droit": right_context + '...'
             })
 
-        return pd.DataFrame(concordances)
+        df_concordancier =  pd.DataFrame(concordances)
+        print("\nConcordancier :")
+        print(df_concordancier)
+
+    def stats(self, n=10):
+        if not self.full_text:
+            self.full_text = "\n".join(doc.text for doc in self.id2doc.values())
+        
+        vocabulary = build_vocabulary(self.full_text)
+        occurrences = count_occurrences(self.full_text)
+        print(f"Nombre de mots différents dans le corpus : {len(vocabulary)}")
+        
+        frequent_words = sorted(occurrences.items(), key=lambda x: x[1], reverse=True)[:n]
+        print(f"Les {n} mots les plus fréquents :")
+        for word, freq in frequent_words:
+            print(f"  - {word} : {freq} occurrences")
+        
+        documents = [doc.text for doc in self.id2doc.values()]
+        document_frequency = count_document_frequency(documents)
+        
+        tab = pd.DataFrame({
+            "Mot": list(occurrences.keys()),
+            "Fréquence": list(occurrences.values()),
+            "Fréquence de documents": [document_frequency.get(word, 0) for word in occurrences.keys()]
+        })
+        
+        tab = tab.sort_values(by="Fréquence", ascending=False)
+        
+        print("\nTableau des fréquences :")
+        print(tab)
 
     def __repr__(self):
         return (
