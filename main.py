@@ -2,23 +2,30 @@ from Classes.Corpus import Corpus
 from Classes.SearchEngine import SearchEngine
 import os
 
-json_filename = "data.json"
+sample_json_filename = "coronavirus_data.json"
 
-# Création d'un corpus
-corpus = Corpus("Corpus COVID")
-
-if os.path.exists(json_filename):
+if os.path.exists(sample_json_filename):
+    corpus = Corpus("Corpus COVID")
     print("Le fichier JSON existe, chargement des données...")
-    corpus.load_from_json(json_filename)
+    corpus.load_from_json(sample_json_filename)
 else:
     print("Le fichier JSON n'existe pas. Interrogation des APIs...")
-    corpus.generate_corpus()
-    corpus.save_to_json(json_filename)
+    query = (
+        input(
+            "Veuillez saisir un sujet scientifique qui vous intéresse (préferer les termes génériques comme 'black holes', 'artificial intelligence', 'cloud computing') "
+        )
+        .strip()
+        .replace(" ", "")
+    )
+    # Création d'un corpus
+    corpus = Corpus(f"Corpus {query}")
+    corpus.generate_corpus(query)
+    corpus.save_to_json(f"{query}_data.json")
 
 print(corpus)
 
 # TD4 question 2.4
-"""Affichage des statistiques d'un auteur 
+"""# Affichage des statistiques d'un auteur 
 name = input("Entrez le nom de l'auteur pour afficher les statistiques : ")
 if name in corpus.authors:
     corpus.authors[name].display_stats()
@@ -32,7 +39,7 @@ corpus.concorde(query,30)
 corpus.stats(10)"""
 
 # TD7 / Moteur de recherche
-# Initialisation du moteur de recherche
+"""# Initialisation du moteur de recherche
 print("Initialisation du moteur de recherche...")
 search_engine = SearchEngine(corpus)
 
@@ -53,4 +60,6 @@ while True:
         print("\nRésultats de la recherche :")
         print(results[["Document ID", "Score", "Texte"]])
     else:
-        print("Aucun résultat trouvé.")
+        print("Aucun résultat trouvé.")"""
+
+# TD8 / Interface (voir fichier 'main.ipynb')

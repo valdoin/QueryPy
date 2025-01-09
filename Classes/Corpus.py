@@ -47,7 +47,7 @@ class Corpus(metaclass=SingletonMeta):
                 self.naut += 1
             self.authors[author_name].add(document)
 
-    def generate_corpus(self):
+    def generate_corpus(self, user_query):
         load_dotenv()
         client_id = os.getenv("REDDIT_CLIENT_ID")
         client_secret = os.getenv("REDDIT_CLIENT_SECRET")
@@ -56,12 +56,12 @@ class Corpus(metaclass=SingletonMeta):
         reddit = praw.Reddit(
             client_id=client_id, client_secret=client_secret, user_agent=user_agent
         )
-        subreddit_name = "Coronavirus"
+        subreddit_name = user_query
         subr = reddit.subreddit(subreddit_name)
 
         # Extraction des données Reddit
         print("Extraction des données depuis Reddit...")
-        for post in subr.hot(limit=20):
+        for post in subr.hot(limit=50):
             title = post.title
             author = post.author.name if post.author else "Inconnu"
             date = datetime.fromtimestamp(post.created).strftime("%Y/%m/%d")
@@ -75,8 +75,8 @@ class Corpus(metaclass=SingletonMeta):
 
         # Extraction des données ArXiv
         print("Extraction des données depuis ArXiv...")
-        query = "covid"
-        url = f"http://export.arxiv.org/api/query?search_query=all:{query}&start=0&max_results=20"
+        query = user_query
+        url = f"http://export.arxiv.org/api/query?search_query=all:{query}&start=0&max_results=50"
         url_read = urllib.request.urlopen(url).read()
         data = url_read.decode()
         dico = xmltodict.parse(data)
