@@ -79,6 +79,6 @@ class ArxivDocument(Document):
     def __repr__(self):
         co_authors_str = ", ".join(self.co_authors) if self.co_authors else "Aucun"
         return (
-            f"title : {self.title}\tmain_author : {self.author}\tco_authors : {co_authors_str}\t"
-            f"Date : {self.date}\tURL : {self.url}\ttext : {self.text}\t"
+            f"Titre : {self.title}\tAuteur : {self.author}\tCo-auteurs : {co_authors_str}\t"
+            f"Date : {self.date}\tURL : {self.url}\tTexte : {self.text}\t"
         )
