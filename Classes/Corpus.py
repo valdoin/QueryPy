@@ -33,6 +33,11 @@ class Corpus(metaclass=SingletonMeta):
             self.full_text = None
             self.initialized = True
 
+    @classmethod
+    def reset_instance(cls): # implémenté pour faciliter les tests unitaires
+            if cls in cls._instances:
+                del cls._instances[cls]
+
     def add_document(self, document):
         self.id2doc[self.ndoc] = document
         self.ndoc += 1

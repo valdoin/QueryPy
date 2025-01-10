@@ -25,21 +25,21 @@ else:
 print(corpus)
 
 # TD4 question 2.4
-"""# Affichage des statistiques d'un auteur 
+# Affichage des statistiques d'un auteur 
 name = input("Entrez le nom de l'auteur pour afficher les statistiques : ")
 if name in corpus.authors:
     corpus.authors[name].display_stats()
 else:
-    print(f"Auteur '{name}' inconnu.")"""
+    print(f"Auteur '{name}' inconnu.")
 
 # TD6 / Tests des fonctions d'analyse du contenu textuel
-"""query = input("Entrez un mot clé correspondant à votre recherche : ")
+query = input("Entrez un mot clé correspondant à votre recherche : ")
 corpus.search(query)
 corpus.concorde(query,30)
-corpus.stats(10)"""
+corpus.stats(10)
 
 # TD7 / Moteur de recherche
-"""# Initialisation du moteur de recherche
+# Initialisation du moteur de recherche
 print("Initialisation du moteur de recherche...")
 search_engine = SearchEngine(corpus)
 
@@ -60,6 +60,6 @@ while True:
         print("\nRésultats de la recherche :")
         print(results[["Document ID", "Score", "Texte"]])
     else:
-        print("Aucun résultat trouvé.")"""
+        print("Aucun résultat trouvé.")
 
 # TD8 / Interface (voir fichier 'main.ipynb')
