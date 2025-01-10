@@ -2,7 +2,8 @@ from Classes.Corpus import Corpus
 from Classes.SearchEngine import SearchEngine
 import os
 
-sample_json_filename = "coronavirus_data.json"
+data_dir = "Data"
+sample_json_filename = os.path.join(data_dir, "coronavirus_data.json")
 
 if os.path.exists(sample_json_filename):
     corpus = Corpus("Corpus COVID")
@@ -20,7 +21,7 @@ else:
     # Création d'un corpus
     corpus = Corpus(f"Corpus {query}")
     corpus.generate_corpus(query)
-    corpus.save_to_json(f"{query}_data.json")
+    corpus.save_to_json(os.path.join(data_dir, f"{query}_data.json"))
 
 print(corpus)
 
