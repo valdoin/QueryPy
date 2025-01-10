@@ -3,18 +3,30 @@ from IPython.display import display, clear_output
 
 
 class SearchInterface:
+    """
+    Classe qui gère une interface utilisateur pour effectuer des recherches
+    sur un corpus à l'aide d'un moteur de recherche.
+    """
+
     def __init__(self, search_engine):
+        """
+        Initialise l'interface de recherche.
+
+        Args:
+            search_engine (SearchEngine): Une instance du moteur de recherche à utiliser.
+        """
         self.search_engine = search_engine
         self.label = widgets.Label("Moteur de recherche")
         self.text_input = widgets.Text(placeholder="Entrez vos mots-clés")
         self.author_input = widgets.Text(placeholder="Filtrer par auteur (optionnel)")
-        self.year_input = widgets.Text(placeholder="Filtrer par année (optionnel, ex: 2023)")
+        self.year_input = widgets.Text(
+            placeholder="Filtrer par année (optionnel, ex: 2023)"
+        )
         self.int_slider = widgets.IntSlider(
             value=10, min=1, max=30, step=1, description="Résultats"
         )
         self.button = widgets.Button(description="Rechercher")
         self.output = widgets.Output()
-
         self.interface = widgets.VBox(
             [
                 self.label,
@@ -26,13 +38,22 @@ class SearchInterface:
                 self.output,
             ]
         )
-
         self.button.on_click(self.click_button)
 
     def display(self):
+        """
+        Affiche l'interface utilisateur dans une cellule Jupyter Notebook.
+        """
         display(self.interface)
 
     def click_button(self, _):
+        """
+        Fonction appelée lorsque le bouton "Rechercher" est cliqué.
+        Elle effectue une recherche en fonction des entrées de l'utilisateur.
+
+        Args:
+            _ (Any): Argument par défaut passé par l'événement du widget (non utilisé).
+        """
         with self.output:
             clear_output()
 
@@ -58,7 +79,9 @@ class SearchInterface:
 
                 if not results.empty:
                     print("\nRésultats de la recherche :")
-                    display(results[["Document ID", "Score", "Auteur", "Date", "Texte"]])
+                    display(
+                        results[["Document ID", "Score", "Auteur", "Date", "Texte"]]
+                    )
                 else:
                     print("Aucun résultat trouvé.")
             else:

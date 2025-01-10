@@ -6,12 +6,30 @@ from utils import remove_stopwords
 
 
 class SearchEngine:
+    """
+    Classe implémentant un moteur de recherche basé sur un corpus.
+    """
+
     def __init__(self, corpus):
+        """
+        Initialise le moteur de recherche avec un corpus donné.
+
+        Args:
+            corpus (Corpus): Le corpus à utiliser pour la recherche.
+        """
         self.corpus = corpus
         self.vocab, self.mat_TF = self.build_term_document_matrix()
         self.mat_TFxIDF = self.build_tfidf_matrix()
 
     def build_term_document_matrix(self):
+        """
+        Construit une matrice terme-document (TF) à partir du corpus.
+
+        Returns:
+            tuple:
+                - vocab (dict): Dictionnaire associant chaque mot à un index unique.
+                - mat_TF (csr_matrix): Matrice sparse représentant les fréquences des mots dans les documents.
+        """
         vocab = {}
         rows, cols, data = [], [], []
 
@@ -35,6 +53,12 @@ class SearchEngine:
         return vocab, mat_TF
 
     def build_tfidf_matrix(self):
+        """
+        Construit une matrice TF-IDF à partir de la matrice TF.
+
+        Returns:
+            csr_matrix: Matrice sparse représentant les scores TF-IDF.
+        """
         doc_count = np.array((self.mat_TF > 0).sum(axis=0)).flatten()
         idf = np.log((1 + self.mat_TF.shape[0]) / (1 + doc_count)) + 1
         tf = self.mat_TF.copy().toarray()
@@ -42,6 +66,23 @@ class SearchEngine:
         return csr_matrix(tfidf)
 
     def search(self, query_keywords, top_n=10, author_filter=None, year_filter=None):
+        """
+        Recherche les documents les plus pertinents en fonction de mots-clés et de filtres optionnels.
+
+        Args:
+            query_keywords (list): Liste de mots-clés pour la recherche.
+            top_n (int, optional): Nombre maximum de documents à retourner. Par défaut, 10.
+            author_filter (str, optional): Filtrer les résultats par auteur. Par défaut, aucun filtre.
+            year_filter (int, optional): Filtrer les résultats par année. Par défaut, aucun filtre.
+
+        Returns:
+            pd.DataFrame: Résultats de la recherche sous forme de DataFrame contenant les colonnes :
+                          - "Document ID"
+                          - "Score"
+                          - "Auteur"
+                          - "Date"
+                          - "Texte"
+        """
         query_vector = np.zeros(len(self.vocab))
         for word in query_keywords:
             if word in self.vocab:
@@ -58,7 +99,7 @@ class SearchEngine:
             if author_filter and author_filter.lower() not in doc.author.lower():
                 continue
             if year_filter:
-                doc_year = int(doc.date.split("/")[0])  
+                doc_year = int(doc.date.split("/")[0])
                 if doc_year != year_filter:
                     continue
 
