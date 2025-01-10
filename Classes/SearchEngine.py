@@ -41,7 +41,7 @@ class SearchEngine:
         tfidf = tf * idf
         return csr_matrix(tfidf)
 
-    def search(self, query_keywords, top_n=10):
+    def search(self, query_keywords, top_n=10, author_filter=None, year_filter=None):
         query_vector = np.zeros(len(self.vocab))
         for word in query_keywords:
             if word in self.vocab:
@@ -52,12 +52,23 @@ class SearchEngine:
         ).flatten()
         top_indices = similarities.argsort()[-top_n:][::-1]
         results = []
+
         for idx in top_indices:
+            doc = self.corpus.id2doc[idx]
+            if author_filter and author_filter.lower() not in doc.author.lower():
+                continue
+            if year_filter:
+                doc_year = int(doc.date.split("/")[0])  
+                if doc_year != year_filter:
+                    continue
+
             results.append(
                 {
                     "Document ID": idx,
                     "Score": similarities[idx],
-                    "Texte": self.corpus.id2doc[idx].text,
+                    "Auteur": doc.author,
+                    "Date": doc.date,
+                    "Texte": doc.text,
                 }
             )
 
