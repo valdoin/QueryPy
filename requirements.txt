@@ -1,0 +1,9 @@
+pandas
+numpy
+scipy
+scikit-learn
+ipywidgets
+pytest
+praw
+python-dotenv
+xmltodict
