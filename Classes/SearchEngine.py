@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from scipy.sparse import csr_matrix
 from sklearn.metrics.pairwise import cosine_similarity
+from utils import remove_stopwords
 
 
 class SearchEngine:
@@ -16,7 +17,7 @@ class SearchEngine:
 
         for doc_id, doc in self.corpus.id2doc.items():
             word_counts = {}
-            words = doc.text.lower().split()
+            words = remove_stopwords(doc.text.lower()).split()
 
             for word in words:
                 word_counts[word] = word_counts.get(word, 0) + 1
@@ -35,7 +36,7 @@ class SearchEngine:
 
     def build_tfidf_matrix(self):
         doc_count = np.array((self.mat_TF > 0).sum(axis=0)).flatten()
-        idf = np.log((1 + self.mat_TF.shape[0]) / (1 + doc_count)) + 1  
+        idf = np.log((1 + self.mat_TF.shape[0]) / (1 + doc_count)) + 1
         tf = self.mat_TF.copy().toarray()
         tfidf = tf * idf
         return csr_matrix(tfidf)

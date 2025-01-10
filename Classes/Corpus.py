@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 import praw
 import urllib.request
 import xmltodict
-from utils import count_document_frequency, build_vocabulary,count_occurrences
+from utils import count_document_frequency, build_vocabulary, count_occurrences, remove_stopwords
 
 
 class SingletonMeta(type):
@@ -231,27 +231,28 @@ class Corpus(metaclass=SingletonMeta):
     def stats(self, n=10):
         if not self.full_text:
             self.full_text = "\n".join(doc.text for doc in self.id2doc.values())
-        
-        vocabulary = build_vocabulary(self.full_text)
-        occurrences = count_occurrences(self.full_text)
-        print(f"Nombre de mots différents dans le corpus : {len(vocabulary)}")
-        
+
+        filtered_text = remove_stopwords(self.full_text)
+        vocabulary = build_vocabulary(filtered_text)
+        occurrences = count_occurrences(filtered_text)
+        print(f"Nombre de mots différents dans le corpus (sans stop words) : {len(vocabulary)}")
+
         frequent_words = sorted(occurrences.items(), key=lambda x: x[1], reverse=True)[:n]
-        print(f"Les {n} mots les plus fréquents :")
+        print(f"Les {n} mots les plus fréquents (sans stop words) :")
         for word, freq in frequent_words:
             print(f"  - {word} : {freq} occurrences")
-        
-        documents = [doc.text for doc in self.id2doc.values()]
+
+        documents = [remove_stopwords(doc.text) for doc in self.id2doc.values()]
         document_frequency = count_document_frequency(documents)
-        
+
         tab = pd.DataFrame({
             "Mot": list(occurrences.keys()),
             "Fréquence": list(occurrences.values()),
             "Fréquence de documents": [document_frequency.get(word, 0) for word in occurrences.keys()]
         })
-        
+
         tab = tab.sort_values(by="Fréquence", ascending=False)
-        
+
         print("\nTableau des fréquences :")
         print(tab)
 

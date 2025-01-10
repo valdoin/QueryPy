@@ -1,4 +1,5 @@
 import re
+from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 
 def clean_text(text):
     text = text.lower()
@@ -43,3 +44,8 @@ def count_document_frequency(documents):
                 document_frequency[word] = 1
 
     return document_frequency
+
+def remove_stopwords(text):
+    words = text.split()
+    filtered_words = [word for word in words if word.lower() not in ENGLISH_STOP_WORDS]
+    return " ".join(filtered_words)
